@@ -1,0 +1,112 @@
+package testes;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import lab4.Sistema;
+
+class SistemaTest {
+	
+	private Sistema sistema;
+	
+	@BeforeEach
+	void preparaSistema() {
+		this.sistema = new Sistema();
+		sistema.cadastraAluno("250", "Gabriel Reyes", "Computação");
+		sistema.cadastraAluno("200", "Lili Camposh", "Computação");
+		sistema.cadastraAluno("202", "Angela Ziegler", "Medicina");
+		sistema.cadastraAluno("201", "Torbjorn Lindholm", "Engenharia Mecânica");
+	}
+	
+
+	@Test
+	void testCadastrarGrupoSemRestricao() {
+		assertEquals("GRUPO CADASTRADO!", sistema.novoGrupo("Programação OO"));
+	}
+	
+	@Test
+	void testCadastrarGrupoComRestricao() {
+		assertEquals("GRUPO CADASTRADO!", sistema.novoGrupo("Listas", 10));
+	}
+	
+	@Test
+	void testCadastrarGrupoComRestriçãoComNomeExistente() {
+		sistema.novoGrupo("Listas", 10);
+		assertEquals("GRUPO JÁ CADASTRADO!", sistema.novoGrupo("Listas"));
+	}
+	
+	@Test
+	void testCadastrarGrupoSemRestriçãoComNomeExistente() {
+		sistema.novoGrupo("Listas");
+		assertEquals("GRUPO JÁ CADASTRADO!", sistema.novoGrupo("Listas", 10));
+	}
+	
+	@Test
+	void testAlocarAlunoAoGrupo() {
+		sistema.novoGrupo("Programação OO");
+		assertEquals("ALUNO ALOCADO!", sistema.alocarAluno("200", "Programação OO"));
+		assertEquals("ALUNO ALOCADO!", sistema.alocarAluno("202", "Programação OO"));
+	}
+	
+	@Test
+	void testAlocarAlunoAoGrupoJaAlocado() {
+		sistema.novoGrupo("Programação OO");
+		sistema.alocarAluno("200", "Programação OO");
+		sistema.alocarAluno("202", "Programação OO");
+		assertEquals("ALUNO ALOCADO!", sistema.alocarAluno("200", "Programação OO"));
+	}
+	
+	@Test
+	void testAlocarAlunoNãoCadastrado() {
+		sistema.novoGrupo("Programação OO");
+		assertEquals("ALUNO NÃO CADASTRADO!", sistema.alocarAluno("100", "Programação OO"));
+	}
+	
+	@Test
+	void testAlocarAlunoQuandoGrupoNãoExiste() {
+		assertEquals("GRUPO NÃO CADASTRADO!", sistema.alocarAluno("200", "Anatomia"));
+	}
+	
+	@Test
+	void testAlocarAlunoAUmGrupoComRestricaoDeTamanho() {
+		sistema.novoGrupo("listas", 1);
+		assertEquals("ALUNO ALOCADO!", sistema.alocarAluno("250", "Listas"));
+		assertEquals("GRUPO CHEIO!", sistema.alocarAluno("202", "listas"));
+	}
+	
+	@Test
+	void testPertinenciaAGrupo() {
+		sistema.novoGrupo("listas");
+		sistema.alocarAluno("250", "Listas");
+		assertEquals("ALUNO PERTENCE AO GRUPO!", sistema.pertinenciaAGrupo("Listas", "250"));
+		assertEquals("ALUNO NÃO PERTENCE AO GRUPO!", sistema.pertinenciaAGrupo("Listas", "202"));
+	}
+	
+	@Test
+	void testPertinenciaAGrupoNãoCadastrado() {
+		assertEquals("GRUPO NÃO CADASTRADO!", sistema.pertinenciaAGrupo("Anatomia", "200"));
+	}
+	
+	@Test
+	void testPertinenciaAGrupoComAlunoNãoCadastrado() {
+		sistema.novoGrupo("Programação OO");
+		assertEquals("ALUNO NÃO CADASTRADO!", sistema.pertinenciaAGrupo("Programação OO", "100"));
+	}
+	
+	@Test
+	void testExibeAlunoSemGrupos() {
+		assertEquals("", sistema.listarGruposAluno("202"));
+	}
+	
+	@Test
+	void testExibeAlunoComGrupos() {
+		sistema.novoGrupo("Programação OO");
+		sistema.novoGrupo("Listas");
+		sistema.alocarAluno("250", "listas");
+		sistema.alocarAluno("250", "Programação OO");
+		assertEquals("- Listas 1" + "\n" + "- Programação OO 1" + "\n", sistema.listarGruposAluno("250"));
+	}
+	
+}

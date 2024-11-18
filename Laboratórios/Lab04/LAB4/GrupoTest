@@ -1,0 +1,38 @@
+package testes;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import lab4.Aluno;
+import lab4.Grupo;
+
+class GrupoTest {
+	
+	private Grupo grupinho;
+	
+	@BeforeEach
+	void preparaGrupo() {
+		this.grupinho = new Grupo("Listas");
+		this.grupinho = new Grupo("Programação OO", 10);
+	}
+
+	@Test
+	void testToString() {
+		assertEquals("- Listas 0" + "\n" + "- Programação OO 0/10" + "\n", grupinho.toString());
+	}
+	
+	@Test
+	void testEquals() {
+		Grupo segundoGrupinho = new Grupo("Listas");
+		assertEquals(grupinho, segundoGrupinho);
+	}
+	
+	@Test
+	void testHashCode() {
+		Grupo segundoGrupinho = new Grupo("Listas");
+		assertEquals(grupinho.hashCode(), segundoGrupinho.hashCode());
+	}
+
+}

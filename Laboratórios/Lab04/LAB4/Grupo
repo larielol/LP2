@@ -1,0 +1,134 @@
+package lab4;
+
+import java.util.HashSet;
+import java.util.Objects;
+
+public class Grupo {
+	
+	/**
+	 * Atributos para a classe Grupo, onde terá os grupos e seus respectivos tamanhos
+	 * onde poderá caber uma quantidade limitada ou ilimitada de alunos
+	 * A qtdAlunos (quantidade de alunos) será um inteiro que é responsável
+	 * pela quantidade limite de cada grupo que tiver
+	 */
+	
+	private String nomeGrupo;
+	private int tamanho;
+	private HashSet<Aluno> alunos;
+	private int qtdAlunos;
+	
+	/**
+	 * Construtor do grupo com tamanho limitado de alunos de acordo com
+	 * o tamanho que será passado
+	 * 
+	 * @param nomeGrupo = nome do grupo
+	 * @param tamanho = tamanho inteiro do conjunto
+	 * @param alunos = conjunto dos alunos que estarão nesse grupo
+	 */
+	
+	public Grupo(String nomeGrupo, int tamanho) {
+		this.nomeGrupo = nomeGrupo;
+		this.tamanho = tamanho;
+		this.alunos = new HashSet<>(tamanho);
+	}
+	
+	/**
+	 * Construtor do grupo sem tamanho, ou seja, ilimitado para a quantidade 
+	 * de alunos que o usuario quiser
+	 * 
+	 * @param nomeGrupo = nome do grupo
+	 * tamanho = numero inteiro -1 para formatar o toString corretamente
+	 * @param alunos = conjunto dos alunos que estarão nesse grupo
+	 */
+	
+	public Grupo(String nomeGrupo) {
+		this.nomeGrupo = nomeGrupo;
+		this.tamanho = -1;
+		this.alunos = new HashSet<>();
+	}
+	
+	/**
+	 * Método para adicionar o aluno no grupo desejado atualizando o
+	 * contador de alunos naquele grupo
+	 * 
+	 * @param aluno representado pela matricula
+	 */
+	
+	public void adicionaAluno(Aluno aluno) {
+		if (!alunos.contains(aluno)) {
+			this.alunos.add(aluno);
+			this.qtdAlunos++;
+		}
+	}
+	
+	/**
+	 * Método booleano para verificar se o tamanho de um grupo foi
+	 * excedido pela contagem de alunos, comparando o tamanho com a quantidade de alunos
+	 * 
+	 * @return se o tamanho foi excedido, retorna true, se não, retorna false
+	 */
+	
+	public boolean acimaDoLimite() {
+		if (this.tamanho == this.qtdAlunos) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Método para verificar se o aluno está no grupo especificado
+	 * 
+	 * @param matricula para o identificar o aluno
+	 * @return returna true caso o aluno esteja no grupo, se o aluno
+	 * não estiver no grupo, retorna false
+	 */
+	
+	public boolean existeNoGrupo(String matricula) {
+		for (Aluno estudante : alunos) {
+			if (estudante.getMatricula().equals(matricula)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * @return Uma toString para formatar a saída de forma correta com o nome do grupo e a
+	 * quantidade de alunos junto com o valor limite do grupo, se não tiver limite, 
+	 * a saída será apenas o nome do grupo junto com a quantidade de alunos
+	 */
+	
+	public String toString() {
+		if (tamanho == -1) {
+			return "- " + this.nomeGrupo + " " + this.qtdAlunos;
+		}
+		return "- " + this.nomeGrupo + " " + this.qtdAlunos + "/" + this.tamanho;
+	}
+	
+	
+	/**
+	 * hashCode e Equals para verificar os valores, se são iguais ou não e ter uma veracidade maior
+	 * no repasse das informações
+	 */
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(nomeGrupo);
+	}
+
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Grupo other = (Grupo) obj;
+		return Objects.equals(nomeGrupo, other.nomeGrupo);
+	}
+	
+	
+}

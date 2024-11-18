@@ -1,0 +1,184 @@
+package lab4;
+
+import java.util.HashMap;
+import java.util.HashSet;
+
+public class Sistema {
+	
+	/**
+	 * Dois atributos privados (HashMaps) para guardar os valores de alunos e grupos
+	 * para a manipulação dos dados
+	 */
+	
+	private HashMap<String, Aluno> alunos;
+	private HashMap<String, Grupo> grupos;
+	
+	/**
+	 * Construtor para definir os mapas sem limites
+	 */
+	
+	public Sistema() {
+		this.alunos = new HashMap<>();
+		this.grupos = new HashMap<>();
+	}
+	
+	/**
+	 * Método para o cadastro do aluno, cada aluno terá uma matricula, nome e curso, porém
+	 * será identificado na maioras dos casos apenas com a matricula
+	 * 
+	 * @param matricula
+	 * @param nome
+	 * @param curso
+	 * @return retorna se foi realizado o cadastro do aluno ou se o aluno já está cadastrado
+	 */
+	
+	public String cadastraAluno(String matricula, String nome, String curso) {
+		Aluno estudante = new Aluno(matricula, nome, curso);
+		if (alunos.containsKey(matricula)) {
+			return "MATRÍCULA JÁ CADASTRADA!";
+		}
+		alunos.put(matricula, estudante);
+		return "MATRÍCULA REALIZADA!";
+	}
+	
+	/**
+	 * Método para exibir o aluno de forma formatada
+	 * 
+	 * @param matricula
+	 * @return retorna a matricula, o nome e o curso do aluno
+	 */
+	
+	public String exibeAluno(String matricula) {
+		if (!alunos.containsKey(matricula)) {
+			return "ALUNO NÃO CADASTRADO!";
+		}
+		return alunos.get(matricula).toString();
+	}
+	
+	/**
+	 * Método para criar um novo grupo, utilizando um nome e tamanho do grupo
+	 * 
+	 * @param nome
+	 * @param caso tenha tamanho de acordo pelo usuario
+	 * @return retorna se o grupo foi cadastrado ou se já está cadastrado
+	 */
+	
+	public String novoGrupo(String nomeGrupo, int tamanho) {
+		Grupo grupinho = new Grupo(nomeGrupo, tamanho);
+		if (grupoExiste(nomeGrupo)) {
+			return "GRUPO JÁ CADASTRADO!";
+		}
+		grupos.put(nomeGrupo, grupinho);
+		return "GRUPO CADASTRADO!";
+	}
+	
+	/**
+	 * Método para criar um novo grupo, utilizando apenas um nome para o mesmo
+	 * 
+	 * @param nomeGrupo nome do grupo a ser cadastrado
+	 * 
+	 * @return retorna se o grupo foi cadastrado ou se já está cadastrado
+	 */
+	
+	public String novoGrupo(String nomeGrupo) {
+		Grupo grupinho = new Grupo(nomeGrupo);
+		if (grupoExiste(nomeGrupo)) {
+			return "GRUPO JÁ CADASTRADO!";
+		}
+		grupos.put(nomeGrupo, grupinho);
+		return "GRUPO CADASTRADO!";
+	}
+	
+	/**
+	 * Método para alocar o aluno em um grupo que desejar
+	 * 
+	 * @param matricula do aluno a ser alocado
+	 * @param nomeGrupo nome do grupo a ser preenchido
+	 * 
+	 * @return retorna a informação sobre a matricula inicialmente, se o aluno está ou não cadastrado
+	 * e após isso se o grupo está cheio ou se o aluno foi alocado
+	 */ 
+	
+	public String alocarAluno(String matricula, String nomeGrupo) {
+		if (!this.alunos.containsKey(matricula)) {
+			return "ALUNO NÃO CADASTRADO!";
+		}
+		if (!grupoExiste(nomeGrupo)) {
+			return "GRUPO NÃO CADASTRADO!";
+		}
+		Grupo grupinho = this.grupos.get(nomePrimarioGrupo(nomeGrupo));
+		if (grupinho.acimaDoLimite()) {
+			return "GRUPO CHEIO!";
+		}
+		Aluno estudante = this.alunos.get(matricula);
+		grupinho.adicionaAluno(estudante);
+		estudante.adicionaGrupo(grupinho);
+		return "ALUNO ALOCADO!";
+	}
+	
+	/**
+	 * Método para verificar se o aluno está em determinado grupo ou não
+	 * 
+	 * @param nomeGrupo nome do grupo a ser verificado
+	 * @param matricula aluno a ser verificado
+	 * 
+	 * @return retorna a informação do aluno, se ele está cadastrado ou não, ou
+	 * retorna se ele pertence ao grupo ou não
+	 */
+	
+	public String pertinenciaAGrupo(String nomeGrupo, String matricula) {
+		if (!this.alunos.containsKey(matricula)) {
+			return "ALUNO NÃO CADASTRADO!";
+		}
+		if (!grupoExiste(nomeGrupo)) {
+			return "GRUPO NÃO CADASTRADO!";
+		}
+		Grupo grupinho = this.grupos.get(nomePrimarioGrupo(nomeGrupo));
+		if (grupinho.existeNoGrupo(matricula)) {
+			return "ALUNO PERTENCE AO GRUPO!";
+		}
+		return "ALUNO NÃO PERTENCE AO GRUPO!";
+	}
+	
+	
+	public boolean grupoExiste(String nomeGrupo) {
+		return nomePrimarioGrupo(nomeGrupo) != null;
+	}
+	
+	
+	/**
+	 * métido para comparar com os outros valores do mapa transformando em 
+	 * minusculo todas as letras
+	 * 
+	 * @param nomeGrupo
+	 * @return o nome do grupo em minusculo ou null
+	 */
+	
+	public String nomePrimarioGrupo(String nomeGrupo) {
+		for (String nGrupos : this.grupos.keySet()) {
+			if (nGrupos.toLowerCase().equals(nomeGrupo.toLowerCase()) && nomeGrupo != null) {
+				return nGrupos;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Método para listar todos os grupos que o aluno está e suas respectivas quantidades/limites
+	 * 
+	 * @param matricula para identificar o aluno
+	 * 
+	 * @return retorna que o aluno não está cadastrado caso a matricula seja invalida ou 
+	 * a lista de grupos que essa aluno (matricula) participa
+	 */
+	
+	public String listarGruposAluno(String matricula) {
+		if (!this.alunos.containsKey(matricula)) {
+			return "ALUNO NÃO CADASTRADO!";
+		}
+		Aluno estudante = this.alunos.get(matricula);
+		return estudante.listarGruposAluno();
+	}
+	
+	
+}

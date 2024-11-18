@@ -1,0 +1,96 @@
+package lab4;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
+
+public class Aluno {
+	
+	/**
+	 * Atributos privados para a classe Aluno, contendo matricula, nome e curso referente ao aluno
+	 * que será cadastrado e o conjunto de grupos que cada aluno terá
+	 */
+	
+	private String matricula;
+	private String nome;
+	private String curso;
+	private HashSet<Grupo> grupos;
+	
+	/**
+	 * construtor da classe que receberá os valores
+	 * 
+	 * @param matricula é o numero de inscrição do aluno
+	 * @param nome é o nome do aluno
+	 * @param curso é o curso do aluno
+	 */
+	
+	public Aluno(String matricula, String nome, String curso) {
+		this.matricula = matricula;
+		this.nome = nome;
+		this.curso = curso;
+		this.grupos = new HashSet<>();
+	}
+	
+	/**
+	 * Método para adicionar um grupo ao aluno, cada aluno pode ter vários grupos
+	 * 
+	 * @param grupo
+	 */
+	
+	public void adicionaGrupo(Grupo grupo) {
+		if (!grupos.contains(grupo)) {
+			this.grupos.add(grupo);
+		}
+	}
+	
+	/**
+	 * Get para obter a matricula do aluno
+	 * 
+	 * @return retorna a matricula do aluno
+	 */
+	
+	public String getMatricula() {
+		return this.matricula;
+	}
+	
+	/**
+	 * Um toString para o retorno organizado sobre os dados do aluno
+	 */
+	
+	@Override
+	public String toString() {
+		return this.matricula + " - " + this.nome + " - " + this.curso;
+	}
+	
+	public String listarGruposAluno() {
+		String gruposDoAluno = "";
+		for (Grupo grupinho : this.grupos) {
+			gruposDoAluno += grupinho.toString() + "\n";
+		}
+		return gruposDoAluno;
+	}
+	
+	
+	/**
+	 * hashCode e Equals para a comparação de dados
+	 * utilizado para verificar valores corretos e passar para as outras classes com segurança
+	 */
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(matricula);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Aluno other = (Aluno) obj;
+		return Objects.equals(matricula, other.matricula);
+	}
+	
+}

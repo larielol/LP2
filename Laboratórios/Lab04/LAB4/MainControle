@@ -1,0 +1,206 @@
+package lab4;
+
+import java.util.Scanner;
+import java.util.HashSet;
+
+/**
+ * Interface com menu para manipular um controle de alunos.
+ * 
+ * @author Lucas Ariel <3
+ *
+ */
+
+public class MainControle {
+	
+	public static void main(String[] args) {
+		Sistema sistema = new Sistema();
+		Scanner scanner = new Scanner(System.in);
+		String escolha = "";
+		while (true) {
+			escolha = menu(scanner);
+			comando(escolha, sistema, scanner);
+		}
+	}
+
+	/**
+	 * Exibe o menu e captura a escolha do/a usuário/a.
+	 * 
+	 * @param scanner Para captura da opção do usuário.
+	 * @return O comando escolhido.
+	 */
+	private static String menu(Scanner scanner) {
+		System.out.println(
+				"\n" + 
+						"(C)adastrar aluno\n" + 
+						"(E)xibir aluno\n" + 
+						"(N)ovo grupo\n" + 
+						"(A)locar aluno e verificar pertinência a grupos\n" + 
+						"(L)istar os grupos em que o aluno está\n" +
+						"(S)air do programa!\n" + 
+						"\n" + 
+						"Opção: ");
+		return scanner.nextLine().toUpperCase();
+	}
+
+	/**
+	 * Interpreta a opção escolhida por quem está usando o sistema.
+	 * 
+	 * C = para cadastrar aluno
+	 * E = para exibir o aluno
+	 * N = para criar um grupo
+	 * A = A = para alocar um aluno em um grupo / P = para verificar se um aluno está em um grupo
+	 * L = para listar os grupos em que o aluno está
+	 * S = para sair do programa
+	 * 
+	 * @param opcao   Opção digitada.
+	 * @param 
+	 * @param scanner Objeto scanner para o caso do comando precisar de mais input.
+	 * 
+	 */
+	private static void comando(String opcao, Sistema sistema, Scanner scanner) {
+		switch (opcao) {
+		case "C":
+			cadastraAluno(sistema, scanner);
+			break;
+		case "E":
+			exibeAluno(sistema, scanner);
+			break;
+		case "N":
+			novoGrupo(sistema, scanner);
+			break;
+		case "A":
+			alocarEPertinencia(sistema, scanner);
+			break;
+		case "L":
+			listarGruposAluno(sistema, scanner);
+			break;
+		case "S":
+			sair();
+			break;
+		default:
+			if (opcao.isEmpty() || opcao == null) {
+				throw new NullPointerException();
+			}
+			System.out.println("Opção inválida!");
+		}
+	}
+	/**
+	 * Solicita os dados para o cadastro do aluno
+	 * 
+	 * @sistema O sistema 
+	 * @scanner para ler a entrada de dados
+	 * 
+	 * @return retorna a matricula, o aluno e a mensagem de cadastro
+	 */
+	
+	private static void cadastraAluno(Sistema sistema, Scanner scanner) {
+		System.out.print("\nMatricula: ");
+		String matricula = scanner.nextLine();
+		System.out.print("\nNome: ");
+		String nome = scanner.nextLine();
+		System.out.print("\nCurso:  ");
+		String curso = scanner.nextLine();
+		System.out.println(sistema.cadastraAluno(matricula, nome, curso));
+	}
+	
+	/**
+	 * Solicita a matrícula para mostrar se o aluno está cadastrado
+	 * 
+	 * @sistema O Sistema para manipular os dados
+	 * @scanner para a entrada de dados
+	 * 
+	 * @return retorna o aluno conjunto a matricula
+	 */
+	
+	private static void exibeAluno(Sistema sistema, Scanner scanner) {
+		System.out.print("\nMatricula: ");
+		String matricula = scanner.nextLine();
+		System.out.println(sistema.exibeAluno(matricula));
+	}
+	
+	/**
+	 * Solicita o nome para o grupo a ser criado e o seu tamanho se tiver
+	 * 
+	 * @sistema para manipular os dados
+	 * @scanner para a entrada de dados
+	 * 
+	 * @return retorna se o grupo já cadastrado ou cadastro efetuado com sucesso
+	 */
+	
+	private static void novoGrupo(Sistema sistema, Scanner scanner) {
+		System.out.print("\nO Grupo terá tamanho? 'S' para sim e 'N' para não: ");
+		String opcao = scanner.nextLine().toUpperCase();
+		if (opcao.equals("S")) {
+			System.out.print("\nGrupo: ");
+			String nomeGrupo = scanner.nextLine();
+			System.out.print("\nTamanho: ");
+			int tamanho = scanner.nextInt();
+			scanner.nextLine();
+			System.out.print(sistema.novoGrupo(nomeGrupo, tamanho));
+		} else if (opcao.equals("N")) {
+			System.out.print("\nGrupo: ");
+			String nomeGrupo = scanner.nextLine();
+			System.out.print(sistema.novoGrupo(nomeGrupo));
+		} else {
+			System.out.print("OPÇÃO INVÁLIDA!");
+		}
+	}
+	
+	/**
+	 * Tem duas opção
+	 * A = Aloca o aluno para um grupo
+	 * P = Verifica se o aluno está naquele grupo
+	 * 
+	 * @param sistema para manipular os dados
+	 * @param scanner para a entrada de dados
+	 * 
+	 * @return retorna se o aluno foi alocado ou se o grupo está cheio
+	 * @return retorna se o aluno está naquele grupo ou não
+	 */
+	
+	private static void alocarEPertinencia(Sistema sistema, Scanner scanner) {
+		System.out.print("(A)locar Aluno ou (P)ertinência a Grupo? ");
+		String opcao = scanner.nextLine().toUpperCase();
+		if (opcao.equals("A")) {
+			System.out.print("\nMatricula: ");
+			String matricula = scanner.nextLine();
+			System.out.print("\nGrupo: ");
+			String nomeGrupo = scanner.nextLine();
+			System.out.print(sistema.alocarAluno(matricula, nomeGrupo));
+		} else if (opcao.equals("P")) {
+			System.out.print("\nGrupo: ");
+			String nomeGrupo = scanner.nextLine();
+			System.out.print("\nMatrícula: ");
+			String matricula = scanner.nextLine();
+			System.out.print(sistema.pertinenciaAGrupo(nomeGrupo, matricula));
+		} else {
+			System.out.print("OPÇÃO INVÁLIDA!");
+		}
+	}
+	
+	/**
+	 * Solicita matricula do aluno para listar todos os grupos que o aluno está
+	 * 
+	 * @param sistema para manipular os dados
+	 * @param scanner para a coleta dos dados
+	 * 
+	 * @return retorna a lista dos grupos do aluno e deus respectivos limites de alunos
+	 */
+	
+	private static void listarGruposAluno(Sistema sistema, Scanner scanner) {
+		System.out.print("\nMatrícula: ");
+		String matricula = scanner.nextLine();
+		System.out.print("\nGrupos: \n");
+		System.out.print(sistema.listarGruposAluno(matricula));
+		
+	}
+	
+	/**
+	 * Opção para o encerramento do programa
+	 */
+	
+	private static void sair() {
+		System.out.println("\nAté mais...");
+		System.exit(0);
+	}
+}

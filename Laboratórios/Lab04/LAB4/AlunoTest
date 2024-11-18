@@ -1,0 +1,36 @@
+package testes;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import lab4.Aluno;
+
+class AlunoTest {
+	
+	private Aluno estudante; 
+		
+	@BeforeEach
+	void preparaAluno() {
+		this.estudante = new Aluno("60", "Rute", "Matematica");
+	}
+
+	@Test
+	void testToString() {
+		assertEquals("60 - Rute - Matematica", estudante.toString());
+	}
+	
+	@Test
+	void testEquals() {
+		Aluno segundoEstudante = new Aluno("60", "Rute", "Matematica");
+		assertEquals(estudante, segundoEstudante);
+	}
+	
+	@Test
+	void testHashCode() {
+		Aluno segundoEstudante = new Aluno("60", "Rute", "Matematica");
+		assertEquals(estudante.hashCode(), segundoEstudante.hashCode());
+	}
+
+}
